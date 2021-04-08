@@ -39,7 +39,7 @@ void setup() {
 
   /******************* RTC setup start***********************/
   RTC.begin();
-  //RTC.adjust(DateTime(__DATE__,__TIME__));
+  RTC.adjust(DateTime(__DATE__,__TIME__));
   //RTC.adjust(DateTime(2014,1,21,3,0,0));
   /******************* RTC setup end***********************/
 }
