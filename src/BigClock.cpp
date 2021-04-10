@@ -55,12 +55,12 @@ int firstRun=1;
 /***************** Menu Start ***********/
 const int numPages=4;  //must be a const to use as array index
 const int numOptions=8; //must be a const to use as array index
-String page[numPages]={"Main Menu","Run Menu","Wait Menu","Status"};
+String page[numPages]={"Main Menu","Menu 1","Menu 2","Menu 3"};
 String menu[numPages][numOptions]={
-  {"Run Time","Wait Time","Status","Quick Run","!! STOP !!","Restart","",""},
-  {"3s","4s","5s","Back","","","",""},
-  {"2h","+15m","-15m","Back","","","",""},
-  {"Reset Wait","*****","*****","Back","","","",""}
+  {"Menu 1","Menu 2","Menu 3","","","","",""},
+  {"M1 O1","M1 O2","M1 O3","M1 O4","M1 O5","M1 O6","M1 O7","M1 O8"},
+  {"M2 O1","M2 O2","M2 O3","M2 O4","M2 O5","M2 O6","M2 O7","M2 O8"},
+  {"M3 O1","M3 O2","M3 O3","M3 O4","M3 O5","M3 O6","M3 O7","M3 O8"}
   };
 
 int maxPage = numPages-1; // max page INDEX
@@ -74,7 +74,7 @@ int preOption = 0;
 int selOption = 0; // selected option INDEX (set on click)
 String currentTopTitle = page[curPage]; // glogal string for top title
 String currentMenuTitle = menu[curPage][curOption]; // glogal string for menu title
-String currentMenuInfo = "wait time";
+String currentMenuInfo = "*********";
 String selectedOption; // global string for clicked option
 /***************** Menu End ***********/
 
@@ -112,7 +112,8 @@ void setup() {
   }
   // show buffer - splash image in lib folder.
   display.display();
-  delay(2000); 
+  delay(1000);
+  display.clearDisplay();
   //******************  LCD Setup END ******************//   
 
   /******************* RTC setup start***********************/
@@ -139,12 +140,12 @@ void setup() {
 
 void loop() {
 
-  currentTopTitle=getTimeS();
-  refreshDisplay();
-  delay(1000);
-
-  // calibrateDisplay();
-
+  //******************  Rotary Listen Loop Start ******************//
+  r.loop();
+  b.loop();
+  //******************  Rotary Listen Loop End ******************// 
+  
+  currentMenuInfo=getTimeS();
 }
 
 void goHome(){
@@ -187,124 +188,6 @@ void showMenuInfo(){
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0,40);
   display.println(currentMenuInfo);
-}
-
-// single click
-void click(Button2& btn) { 
-  selOption = curpos;
-  selectedOption = menu[curPage][selOption];
-  switch(curPage){
-    // case for each page
-    case 0:
-      // Main Menu
-      switch(selOption){
-        // case for each option
-        case 0:
-          // First Menu
-          if(firstRun){refreshDisplay();break;} //consume boot click event
-          curPage=1; // new page
-          curOption = minpos;  //option array index 
-          curpos = minpos; //rotary position
-          currentTopTitle = page[curPage];
-          currentMenuTitle = menu[curPage][curOption];
-          refreshDisplay();
-          break;
-        case 1:
-        // 2nd Menu
-          curPage=2; // new page
-          curOption = minpos;  //option array index 
-          curpos = minpos; //rotary position
-          currentTopTitle = page[curPage];
-          currentMenuTitle = menu[curPage][curOption];
-          refreshDisplay();
-          break;
-        case 2:
-        // 3rd Menu
-          curPage=3; // new page
-          curOption = minpos;  //option array index 
-          curpos = minpos; //rotary position
-          currentTopTitle = page[curPage];
-          currentMenuTitle = menu[curPage][curOption];
-          refreshDisplay();
-          break;
-        case 3:
-        // 4th Menu
-          curPage=4; // new page
-          curOption = minpos;  //option array index 
-          curpos = minpos; //rotary position
-          currentTopTitle = page[curPage];
-          currentMenuTitle = menu[curPage][curOption];
-          refreshDisplay();
-          break;
-        case 4:
-          goHome();
-          break; 
-        case 5:
-          goHome();
-          break; 
-      }
-      Serial.print("Selected : ");Serial.println(selectedOption);
-      break;
-    case 1:
-      // Run Time
-      switch(selOption){
-        // case for each option
-        case 0:
-          goHome();
-          break;
-        case 1:
-          goHome();
-          break;
-        case 2:
-          goHome();
-          break;
-        case 3:
-          // Go to Main Menu
-          goHome();        
-          break; 
-      }
-      Serial.print("Selected : ");Serial.println(selectedOption);   
-      break;
-    case 2:
-      // Wait Time
-      switch(selOption){
-        // case for each option
-        case 0:
-          goHome();
-          break;
-        case 1:
-          goHome();
-          break;
-        case 2:
-          goHome();
-          break;
-        case 3:
-          goHome();
-          break;
-      }
-      Serial.print("Selected : ");Serial.println(selectedOption);   
-      break;
-    case 3:
-      // Status
-      switch(selOption){
-        // case for each option
-        case 0:
-          goHome();
-          break;
-        case 1:
-          goHome();
-          break;
-        case 2:
-          goHome();
-          break;
-        case 3:
-          goHome();
-          break;
-      }
-      Serial.print("Selected : ");Serial.println(selectedOption); 
-      break;
-  }
-
 }
 
 // left/right rotation
@@ -351,17 +234,6 @@ void showDirection(ESPRotary& r) {
   Serial.print("Menu Item : ");Serial.println(curpos);
 }
 
-// all rotation
-void rotate(ESPRotary& r) {
-   Serial.println(r.getPosition());
-   /*
-    * with no call to r.getPosition() here
-    * intermitent drop out of rotary polling
-    * after click or change direction.
-    * 
-    */
-}
-
 void refreshDisplay(){
   display.clearDisplay();
   showTopTitle();
@@ -387,12 +259,9 @@ String getTimeS(){
   if (now.isPM()==1){ampm="P";} else {ampm="A"; }
 
   String sTime=sHour + ":" + sMinute + ":" + sSecond + " " + ampm;
-  Serial.print("Padded : ");
-  Serial.println(sTime);
 
   return sTime;
 }
-
 void calibrateDisplay(){
 
   // sliding vertical row check
@@ -452,5 +321,195 @@ void calibrateDisplay(){
 
   // multi row check
 
+}
 
+// single click
+void click(Button2& btn) { 
+  selOption = curpos;
+  selectedOption = menu[curPage][selOption];
+  switch(curPage){
+    // case for each page
+    case 0:
+      // Main Menu
+      switch(selOption){
+        // case for each option
+        case 0:
+          // 1 Menu
+          if(firstRun){refreshDisplay();break;} //consume boot click event
+          curPage=1; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 1:
+        // 2 Menu
+          curPage=2; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 2:
+        // 3 Menu
+          curPage=3; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 3:
+        // 4 Menu
+          curPage=4; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 4:
+        // 5 Menu
+          curPage=5; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 5:
+        // 6 Menu
+          curPage=6; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 6:
+        // 7 Menu
+          curPage=7; // new page
+          curOption = minpos;  //option array index 
+          curpos = minpos; //rotary position
+          currentTopTitle = page[curPage];
+          currentMenuTitle = menu[curPage][curOption];
+          refreshDisplay();
+          break;
+        case 7:
+        // 8 Menu
+          goHome();
+          break;
+      }
+      Serial.print("Selected : ");Serial.println(selectedOption);
+      break;
+    case 1:
+      // Run Time
+      switch(selOption){
+        // case for each option
+        case 0:
+          goHome();
+          break;
+        case 1:
+          goHome();
+          break;
+        case 2:
+          goHome();
+          break;
+        case 3:
+          // Go to Main Menu
+          goHome();        
+          break; 
+        case 4:
+          goHome();
+          break;
+        case 5:
+          goHome();
+          break;
+        case 6:
+          goHome();
+          break;
+        case 7:
+          // Go to Main Menu
+          goHome();        
+          break; 
+      }
+      Serial.print("Selected : ");Serial.println(selectedOption);   
+      break;
+    case 2:
+      // Wait Time
+      switch(selOption){
+        // case for each option
+        case 0:
+          goHome();
+          break;
+        case 1:
+          goHome();
+          break;
+        case 2:
+          goHome();
+          break;
+        case 3:
+          goHome();
+          break;
+        case 4:
+          goHome();
+          break;
+        case 5:
+          goHome();
+          break;
+        case 6:
+          goHome();
+          break;
+        case 7:
+          goHome();
+          break;
+      }
+      Serial.print("Selected : ");Serial.println(selectedOption);   
+      break;
+    case 3:
+      // Status
+      switch(selOption){
+        // case for each option
+        case 0:
+          goHome();
+          break;
+        case 1:
+          goHome();
+          break;
+        case 2:
+          goHome();
+          break;
+        case 3:
+          goHome();
+          break;
+        case 4:
+          goHome();
+          break;
+        case 5:
+          goHome();
+          break;
+        case 6:
+          goHome();
+          break;
+        case 7:
+          goHome();
+          break;
+      }
+      Serial.print("Selected : ");Serial.println(selectedOption); 
+      break;
+  }
+
+}
+
+// all rotation
+void rotate(ESPRotary& r) {
+   //Serial.println(r.getPosition());
+   /*
+    * with no call to r.getPosition() here
+    * intermitent drop out of rotary polling
+    * after click or change direction.
+    * 
+    */
 }
