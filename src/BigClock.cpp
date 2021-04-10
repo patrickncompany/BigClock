@@ -20,9 +20,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 void showTopTitle();
 void refreshDisplay();
 String currentTopTitle ="xx:xx:xx am";
-uint8 cHour;
-uint8 cMinute;
-uint8 cSecond;
+uint8_t cHour;
+uint8_t cMinute;
+uint8_t cSecond;
 String ampm;
 
 void setup() {
@@ -39,8 +39,8 @@ void setup() {
 
   /******************* RTC setup start***********************/
   RTC.begin();
-  RTC.adjust(DateTime(__DATE__,__TIME__));
-  //RTC.adjust(DateTime(2014,1,21,3,0,0));
+  RTC.adjust(DateTime(__DATE__,__TIME__));  // set time from pc at compile.
+  //RTC.adjust(DateTime(2014,1,21,3,0,0));  // set time manually.
   /******************* RTC setup end***********************/
 }
 
