@@ -4,6 +4,14 @@
 
 RTC_DS3231 RTC;
 
+/***************** Hearbeat Start ********************/
+#include <arduino-timer.h>
+auto hbTimer = timer_create_default();
+uint32_t hb_interval = 1000;
+bool hb_callback(void *);
+void updateTime();
+/***************** Hearbeat End ********************/
+
 /***************** LCD Start ***********/
 #include <SPI.h>
 #include <Wire.h>
@@ -136,6 +144,10 @@ void setup() {
   Serial.println(menu[curPage][curOption]);  
   //******************  Menu Setup End  ******************//
 
+  //****************** Heartbeat Setup Start **********************//
+   hbTimer.every(hb_interval,hb_callback);
+   //****************** Heartbeat Setup End **********************//
+
 }
 
 void loop() {
@@ -145,7 +157,18 @@ void loop() {
   b.loop();
   //******************  Rotary Listen Loop End ******************// 
   
+  //****************** Heartbeat Loop Start **********************//
+  hbTimer.tick();
+  //****************** Heartbeat Loop End **********************//
+
   currentMenuInfo=getTimeS();
+}
+
+bool hb_callback(void *){
+  //Serial.println("heartbeat");
+    currentMenuInfo=getTimeS();
+    refreshDisplay();
+  return true;
 }
 
 void goHome(){
@@ -262,6 +285,7 @@ String getTimeS(){
 
   return sTime;
 }
+
 void calibrateDisplay(){
 
   // sliding vertical row check
