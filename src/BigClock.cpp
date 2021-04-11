@@ -62,13 +62,13 @@ int firstRun=1;
 
 /***************** Menu Start ***********/
 const int numPages=4;  //must be a const to use as array index
-const int numOptions=8; //must be a const to use as array index
-String page[numPages]={"Main Menu","Menu 1","Menu 2","Menu 3"};
+const int numOptions=12; //must be a const to use as array index
+String page[numPages]={"Main Menu","Hour","Minute","AM/PM"};
 String menu[numPages][numOptions]={
-  {"Menu 1","Menu 2","Menu 3","","","","",""},
-  {"M1 O1","M1 O2","M1 O3","M1 O4","M1 O5","M1 O6","M1 O7","M1 O8"},
-  {"M2 O1","M2 O2","M2 O3","M2 O4","M2 O5","M2 O6","M2 O7","M2 O8"},
-  {"M3 O1","M3 O2","M3 O3","M3 O4","M3 O5","M3 O6","M3 O7","M3 O8"}
+  {"Set Hour","Set Minute","Set AM/PM","","","","",""},
+  {"+1h","-1h","+2h","-2h","+6h","-6hr","Exit","","","","",""},
+  {"+1m","-1m","+5m","-5m","+10m","-10m","+30m","-30m","Exit","","",""},
+  {"AM","PM","Exit","","","","","","","","",""}
   };
 
 int maxPage = numPages-1; // max page INDEX
@@ -91,6 +91,12 @@ uint8_t cHour;
 uint8_t cMinute;
 uint8_t cSecond;
 String ampm;
+uint8_t gYear;
+uint8_t gMonth;
+uint8_t gDay;
+uint8_t gHour;
+uint8_t gMinute ;
+String gampm;
 /***************** RTC End ***********/
 
 // display forward declares
@@ -429,78 +435,190 @@ void click(Button2& btn) {
       Serial.print("Selected : ");Serial.println(selectedOption);
       break;
     case 1:
-      // Run Time
+      // Hour
       switch(selOption){
         // case for each option
         case 0:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() + 1;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 1:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() - 1;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 2:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() +2;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 3:
-          // Go to Main Menu
-          goHome();        
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() - 2;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();  
           break; 
         case 4:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() + 6;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 5:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour() - 6;
+          gMinute = RTC.now().minute();
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 6:
           goHome();
           break;
-        case 7:
-          // Go to Main Menu
-          goHome();        
-          break; 
       }
       Serial.print("Selected : ");Serial.println(selectedOption);   
       break;
     case 2:
-      // Wait Time
+      // Set Minute
       switch(selOption){
         // case for each option
         case 0:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() + 1;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 1:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() - 1;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 2:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() + 5;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 3:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() - 5;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 4:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() + 30;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 5:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute() - 30;
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 6:
           goHome();
           break;
         case 7:
+          goHome();
+          break;
+        case 8:
           goHome();
           break;
       }
       Serial.print("Selected : ");Serial.println(selectedOption);   
       break;
     case 3:
-      // Status
+      // am pm
       switch(selOption){
         // case for each option
         case 0:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().twelveHour();
+          gMinute = RTC.now().minute();
+
+          if (RTC.now().isPM()){
+            gHour = gHour + 12;
+          } else {
+            // already am
+          }
+
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          gHour = RTC.now().twelveHour(); // must display 12 hour
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 1:
-          goHome();
+          gYear = RTC.now().year();
+          gMonth = RTC.now().month();
+          gDay = RTC.now().day();
+          gHour = RTC.now().hour();
+          gMinute = RTC.now().minute();
+
+          if (RTC.now().isPM()){
+            // already pm
+          } else {
+            gHour = gHour + 12;
+          }
+
+          RTC.adjust(DateTime(gYear, gMonth, gDay, gHour, gMinute, 0));
+          gHour = RTC.now().twelveHour(); // must display 12 hour
+          currentMenuInfo=getTimeS();
+          refreshDisplay();
           break;
         case 2:
           goHome();
@@ -518,6 +636,9 @@ void click(Button2& btn) {
           goHome();
           break;
         case 7:
+          goHome();
+          break;
+        case 8:
           goHome();
           break;
       }
