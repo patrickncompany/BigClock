@@ -44,9 +44,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 /***************** Rotary Control Start ***********/
 #include <Button2.h>
 #include <ESPRotary.h>
-#define ROTARY_PIN1 14  // D5 = ESP12 GPIO14 // ESP32 D14 GPIO14
-#define ROTARY_PIN2 12  // D6 = ESP12 GPIO12 // ESP32 D12 GPIO12
-#define BUTTON_PIN  13  // D7 = ESP13 GPIO13 // ESP32 D13 GPIO13 
+#define ROTARY_PIN1 12  // D5 = ESP12 GPIO14 // ESP32 D14 GPIO14
+#define ROTARY_PIN2 13  // D6 = ESP12 GPIO12 // ESP32 D12 GPIO12
+#define BUTTON_PIN  14  // D7 = ESP13 GPIO13 // ESP32 D13 GPIO13 
 #define CLICKS_PER_STEP   4   // this number depends on your rotary encoder 
 ESPRotary r = ESPRotary(ROTARY_PIN1, ROTARY_PIN2, CLICKS_PER_STEP);
 Button2 b = Button2(BUTTON_PIN);
@@ -65,7 +65,7 @@ const int numPages=4;  //must be a const to use as array index
 const int numOptions=12; //must be a const to use as array index
 String page[numPages]={"Main Menu","Hour","Minute","AM/PM"};
 String menu[numPages][numOptions]={
-  {"Set Hour","Set Minute","Set AM/PM","","","","",""},
+  {"Set Hour","Set Minute","Set AM/PM","----------","","","",""},
   {"+1h","-1h","+2h","-2h","+6h","-6hr","Exit","","","","",""},
   {"+1m","-1m","+5m","-5m","+10m","-10m","+30m","-30m","Exit","","",""},
   {"AM","PM","Exit","","","","","","","","",""}
@@ -116,7 +116,7 @@ void showMenuTitle();
 void showMenuInfo();
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   //******************  LCD Setup Start ******************//
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -133,7 +133,7 @@ void setup() {
   /******************* RTC setup start***********************/
   RTC.begin();
   //RTC.adjust(DateTime(__DATE__,__TIME__));  // set time from pc at compile.
-  RTC.adjust(DateTime(2025,5,5,5,5,55));  // set time manually.
+  //RTC.adjust(DateTime(2025,5,5,5,5,55));  // set time manually.
   /******************* RTC setup end***********************/
 
   //******************  Rotary Setup Start  ******************//
@@ -588,11 +588,11 @@ void click(Button2& btn) {
           gYear = RTC.now().year();
           gMonth = RTC.now().month();
           gDay = RTC.now().day();
-          gHour = RTC.now().twelveHour();
+          gHour = RTC.now().hour();
           gMinute = RTC.now().minute();
 
           if (RTC.now().isPM()){
-            gHour = gHour + 12;
+            gHour = gHour - 12;
           } else {
             // already am
           }
