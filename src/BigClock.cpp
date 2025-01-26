@@ -13,7 +13,7 @@ void updateTime();
 /***************** Hearbeat End ********************/
 
 /***************** LCD Start ***********/
-#include <SPI.h>
+// #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_BusIO_Register.h>
 #include <Adafruit_GFX.h>
